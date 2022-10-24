@@ -22,11 +22,11 @@ def winEnumHandler( hwnd, ctx ):
         print (win32gui.GetWindowText( hwnd ))
 win32gui.EnumWindows( winEnumHandler, None )
 
-im = screenshot('DeSmuME 0.9.13 x64 SSE2 | Pokémon Diamond')
-im.save("test_fotos/battle.png")
-print(1)
+im = screenshot('pokemon – battle_detection.py')
+im.save("test_fotos/pycharm.png")
 if im:
     im.show()
+    print(type(im))
 
 
 
