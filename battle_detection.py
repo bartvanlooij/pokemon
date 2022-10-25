@@ -1,8 +1,8 @@
 import pyautogui
 import win32gui
 
-
 def screenshot(window_title=None):
+
     if window_title:
         hwnd = win32gui.FindWindow(None, window_title)
         if hwnd:
@@ -17,16 +17,16 @@ def screenshot(window_title=None):
     else:
         im = pyautogui.screenshot()
         return im
-def winEnumHandler( hwnd, ctx ):
-    if win32gui.IsWindowVisible( hwnd ):
-        print (win32gui.GetWindowText( hwnd ))
-win32gui.EnumWindows( winEnumHandler, None )
-
-im = screenshot('pokemon – battle_detection.py')
-im.save("test_fotos/pycharm.png")
-if im:
-    im.show()
-    print(type(im))
-
+# def winEnumHandler( hwnd, ctx ):
+#     if win32gui.IsWindowVisible( hwnd ):
+#         print (win32gui.GetWindowText( hwnd ))
+#         if "DeSmuMe" in win32gui.GetWindowText(hwnd):
+#             return win32gui.GetWindowText(hwnd)
+#
+# win32gui.EnumWindows( winEnumHandler, None )
+# im = screenshot('pokemon – battle_detection.py')
+# im.save("test_fotos/pycharm.png")
+# if im:
+#     im.show()
 
 

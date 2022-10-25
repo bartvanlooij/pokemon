@@ -1,49 +1,71 @@
-from PIL import Image, ImageFilter, ImageOps
+import PIL.Image
+from PIL import Image
 import pytesseract
 import math
-from print_pokemon_data import get_pokemon_data
-import pandas as pd
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-im = Image.open("test_fotos/battle.png")
 
-black_seen = False
-for i in range(im.height):
-    pixel_color = im.getpixel((0, i))
-    if pixel_color == (0, 0, 0):
-        black_seen = True
-    if black_seen:
-        if pixel_color != (0, 0, 0):
-            top = i
+def calibration(calibration_img : PIL.Image.Image):
+    black_seen = False
+    top_bar_seen = False
+    for i in range(calibration_img.height):
+
+        pixel_color = calibration_img.getpixel((0, i))
+        if pixel_color == (240,240,240):
+            top_bar_seen = True
+        if top_bar_seen:
+            if pixel_color != (240,240,240):
+                top_screen_top = i
+                top_bar_seen = False
+        if pixel_color == (0, 0, 0):
+            black_seen = True
+        if black_seen:
+            if pixel_color != (0, 0, 0):
+                top = i
+                top_screen_coords = (0, top_screen_top, calibration_img.width, top)
+                bot_screen_coords = (0, top, calibration_img.width, calibration_img.height)
+                break
+
+    return top_screen_coords, bot_screen_coords
+
+def find_name_box(top_screen : PIL.Image.Image):
+
+    top_box_found = 0
+    tolerance = 5
+    for i in range(top_screen.height):
+        r, g, b = top_screen.getpixel((0,i))
+        if ( 60 - tolerance <= r <= 60 + tolerance and
+                60 - tolerance <= g <= 60 + tolerance and
+                60 - tolerance <= b <= 60 + tolerance
+                and top_box_found == 0):
+            top_box_found += 1
+
+
+        if (top_box_found == 1 and not
+              (
+                      (r < 60 - tolerance and g < 60 - tolerance and b < 60 - tolerance)
+                  or (r < 60 + tolerance and g < 60 + tolerance and b < 60 + tolerance)
+              )):
+            top_box_found += 1
+            top_box = i
+
+
+        if ( 60 - tolerance <= r <= 60 + tolerance and
+                60 - tolerance <= g <= 60 + tolerance and
+                60 - tolerance <= b <= 60 + tolerance
+                and top_box_found == 2):
+            bottom_box = i
+
+            break
+    box_image = top_screen.crop((0, top_box, top_screen.width, bottom_box))
+    for i in range(0,box_image.width):
+        r, g, b = box_image.getpixel((i,0))
+        if ( 60 - tolerance <= r <= 60 + tolerance and
+                60 - tolerance <= g <= 60 + tolerance and
+                60 - tolerance <= b <= 60 + tolerance):
+            box_right = i
             break
 
-new_image = im.crop((0, top, im.width, im.height))
-new_image.save("test_fotos/battle_format.png")
-
-top_screen = im.crop((0, 0, im.width, top))
-
-top_box_found = 0
-for i in range(top_screen.height):
-
-    if (top_screen.getpixel((0,i)) == (60,60,60) and top_box_found == 0):
-        top_box_found += 1
-    if (top_screen.getpixel((0,i)) != (60,60,60) and top_box_found == 1):
-        top_box_found += 1
-        top_box = i
-    if (top_screen.getpixel((0, i)) == (60, 60, 60) and top_box_found == 2):
-        bottom_box = i
-        break
-box_image = top_screen.crop((0,top_box, top_screen.width, bottom_box))
-for i in range(0,box_image.width):
-    if box_image.getpixel((i, 4)) == (60,60,60):
-        box_right = i
-        break
-
-box_right = math.floor(box_right*0.61)
-bottom_box = bottom_box - top_box
-bottom_box = math.floor(bottom_box*0.6)
-box_image = top_screen.crop((0,top_box, box_right, top_box + bottom_box))
-
-box_image.save('test_fotos/pokemon_box.png')
-
-
-get_pokemon_data(pytesseract.image_to_string(box_image), pd.read_csv("pokemon.csv", index_col=0), pd.read_csv("df_all_moves.csv", index_col=0))
+    box_right = math.floor(box_right*0.61)
+    bottom_box = bottom_box - top_box
+    bottom_box = math.floor(bottom_box*0.6)
+    box_coords = (0,top_box, box_right, top_box + bottom_box)
+    return box_coords
