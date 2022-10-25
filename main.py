@@ -4,13 +4,9 @@ from calibration import calibration, find_name_box
 import pygetwindow as gw
 from PIL import Image, ImageFilter, ImageOps
 from compare_images import *
-from print_pokemon_data import get_pokemon_data
 import pytesseract
-import math
 from print_pokemon_data import get_pokemon_data
 import pandas as pd
-import numpy as np
-import re
 def check_for_battle(bot : PIL.Image.Image, test_screen : PIL.Image.Image):
     bot, test_screen = make_images_same_size(test_screen, bot)
     bot = ImageOps.grayscale(bot)
