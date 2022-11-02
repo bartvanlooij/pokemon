@@ -15,7 +15,6 @@ from PIL import Image
 # img2 = Image.open("test_fotos/2.png")
 #
 # rmsdiff(img1,img2)
-import ImageOps
 import PIL.Image
 from PIL import Image # No need for ImageChops
 import math

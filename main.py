@@ -16,17 +16,17 @@ def check_for_battle(bot : PIL.Image.Image, test_screen : PIL.Image.Image):
     return similairity
 
 
-def print_evolution_order(df_current_pokemon):
-    return_string = ""
-    for count in range(8):
-        if type(df_current_pokemon.loc[f"{count}"]) != np.float64:
-            print(type(df_current_pokemon.loc[f"{count}"]))
-            return_string = return_string + df_current_pokemon.loc[f"{count}"]
-        if type(df_current_pokemon.loc[f"{count+1}_{count+2}"]) != np.float64:
-            evolution_req = df_current_pokemon.loc[f'{count + 1}_{count + 2}']
-            return_string = return_string +  f"---{evolution_req}-->"
-
-    return return_string
+# def print_evolution_order(df_current_pokemon):
+#     return_string = ""
+#     for count in range(8):
+#         if type(df_current_pokemon.loc[f"{count}"]) != np.float64:
+#             print(type(df_current_pokemon.loc[f"{count}"]))
+#             return_string = return_string + df_current_pokemon.loc[f"{count}"]
+#         if type(df_current_pokemon.loc[f"{count+1}_{count+2}"]) != np.float64:
+#             evolution_req = df_current_pokemon.loc[f'{count + 1}_{count + 2}']
+#             return_string = return_string +  f"---{evolution_req}-->"
+#
+#     return return_string
 def main():
     calibrated = False
     print_order = ["Name", "Type 1", "Type 2", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed", "Total"]
@@ -68,7 +68,7 @@ def main():
                 for element in print_order:
                     print(f"{element}: {df_current_pokemon.loc[element]}")
 
-                print(print_evolution_order(df_current_pokemon))
+                # print(print_evolution_order(df_current_pokemon))
 
 
 
