@@ -7,6 +7,7 @@ from compare_images import *
 import pytesseract
 from print_pokemon_data import get_pokemon_data
 import pandas as pd
+import ast
 import numpy as np
 def check_for_battle(bot : PIL.Image.Image, test_screen : PIL.Image.Image):
     bot, test_screen = make_images_same_size(test_screen, bot)
@@ -15,22 +16,34 @@ def check_for_battle(bot : PIL.Image.Image, test_screen : PIL.Image.Image):
     similairity = similarity(bot, test_screen)
     return similairity
 
+def evolution_walk(evolution):
+    if not evolution:
+        return ""
+    else:
+        evolution_walk(evolution)
+        if evolution[1] == 'level-up':
+            return f'---  Lvl. {evolution[2]}  --->  {evolution[0]}'
+        if evolution[1] == 'use-item':
+            return f'---  {evolution[2][0].upper()}{evolution[2][1:]}  --->  {evolution[0]}'
+        if evolution[1] == "---  trade  ---> ":
+            return f'---  Trade  ---> {evolution[2]}'
+def print_evolution_order(df_current_pokemon):
+    return_string = ""
+    evolution_possibilities = ['level-up', 'use-item', 'trade']
+    evolutions = df_current_pokemon.loc['evolution']
+    for x in evolutions:
+        return_string = return_string + f"\n\n{df_current_pokemon.loc['Name']}"
+        return_string = return_string + evolution_walk(x)
 
-# def print_evolution_order(df_current_pokemon):
-#     return_string = ""
-#     for count in range(8):
-#         if type(df_current_pokemon.loc[f"{count}"]) != np.float64:
-#             print(type(df_current_pokemon.loc[f"{count}"]))
-#             return_string = return_string + df_current_pokemon.loc[f"{count}"]
-#         if type(df_current_pokemon.loc[f"{count+1}_{count+2}"]) != np.float64:
-#             evolution_req = df_current_pokemon.loc[f'{count + 1}_{count + 2}']
-#             return_string = return_string +  f"---{evolution_req}-->"
-#
-#     return return_string
+
+
+    return return_string
 def main():
     calibrated = False
     print_order = ["Name", "Type 1", "Type 2", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed", "Total"]
+    global df_pokemon
     df_pokemon = pd.read_csv("pokemon.csv", index_col=0)
+    df_pokemon['evolution'] = df_pokemon['evolution'].apply(ast.literal_eval)
     df_all_moves = pd.read_csv("df_all_moves.csv", index_col=0)
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
     all_windows = gw.getAllTitles()
