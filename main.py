@@ -58,7 +58,7 @@ def main():
     test_screen = ImageOps.grayscale(test_screen)
     box_coords = find_name_box(top_screen)
     calibrated = True
-    pokemon_name = "pickacu"
+    pokemon_name = "pi"
     while calibrated:
         time.sleep(2)
         screen = screenshot(name_desmume)
@@ -74,6 +74,8 @@ def main():
             top_screen = screen.crop(top_coords)
             box_image = top_screen.crop(box_coords)
             box_image = ImageOps.grayscale(box_image)
+            while len(pokemon_name) <= 2:
+                pytesseract.image_to_string(box_image) != pokemon_name
             if pytesseract.image_to_string(box_image) != pokemon_name:
                 pokemon_name = pytesseract.image_to_string(box_image)
                 df_current_pokemon = get_pokemon_data(pokemon_name, df_pokemon)
