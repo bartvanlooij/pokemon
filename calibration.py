@@ -7,12 +7,11 @@ def calibration(calibration_img : PIL.Image.Image):
     black_seen = False
     top_bar_seen = False
     for i in range(calibration_img.height):
-
         pixel_color = calibration_img.getpixel((0, i))
-        if pixel_color == (240,240,240):
+        if pixel_color == (73, 215, 200):
             top_bar_seen = True
         if top_bar_seen:
-            if pixel_color != (240,240,240):
+            if pixel_color != (73, 215, 200):
                 top_screen_top = i
                 top_bar_seen = False
         if pixel_color == (0, 0, 0):
@@ -27,10 +26,10 @@ def calibration(calibration_img : PIL.Image.Image):
     return top_screen_coords, bot_screen_coords
 
 def find_name_box(top_screen : PIL.Image.Image):
-
     top_box_found = 0
-    tolerance = 5
+    tolerance = 10
     for i in range(top_screen.height):
+
         r, g, b = top_screen.getpixel((0,i))
         if ( 60 - tolerance <= r <= 60 + tolerance and
                 60 - tolerance <= g <= 60 + tolerance and
