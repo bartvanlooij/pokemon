@@ -48,6 +48,7 @@ def main():
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
     all_windows = gw.getAllTitles()
     name_desmume = [x for x in all_windows if "DeSmuME" in x][0]
+    print(name_desmume)
     calibration_image = screenshot(name_desmume)
     top_coords, bot_coords = calibration(calibration_image)
     top_screen = calibration_image.crop(top_coords)
